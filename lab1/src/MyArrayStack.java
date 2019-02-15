@@ -23,7 +23,7 @@ public class MyArrayStack {
         this.capacity = capacity;
     }
 
-    public void push(int item) throws Exception { // Вставка элемента
+    public void push(Integer item) throws Exception { // Вставка элемента
         if (size >= capacity) { // Стек уже полон
             throw new Exception("Stack is full"); // Кидаем исключение
         }
