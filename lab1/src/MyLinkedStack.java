@@ -1,7 +1,7 @@
 import java.lang.String;
 import java.lang.Exception;
 
-public class MyLinkedStack<T> {
+public class MyLinkedStack<T> implements MyStack<T> {
     // Private
     private StackItem<T> head = null;
     private int size = 0;

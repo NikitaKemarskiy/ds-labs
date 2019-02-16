@@ -2,7 +2,7 @@ import java.lang.String;
 import java.lang.Exception;
 import java.lang.reflect.Array;
 
-public class MyArrayStack<T> {
+public class MyArrayStack<T> implements MyStack<T> {
     // Private
     private final static GenericArrayFactory factory = new GenericArrayFactory();
     private final static int defaultCapacity = 255; // Размер массива по умолчанию
