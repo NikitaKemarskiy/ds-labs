@@ -1,29 +1,33 @@
-import java.lang.Integer;
 import java.lang.String;
 import java.lang.Exception;
+import java.lang.reflect.Array;
 
-public class MyArrayStack {
+public class MyArrayStack<T> {
     // Private
+    private final static GenericArrayFactory factory = new GenericArrayFactory();
     private final static int defaultCapacity = 255; // Размер массива по умолчанию
-    private Integer[] arr;
+    private Class<T> instance = null;
+    private T[] arr = null;
     private int size = 0;
     private int capacity = defaultCapacity;
 
     // Public
-    MyArrayStack() { // Конструктор по умолчанию
-        arr = new Integer[defaultCapacity];
+    MyArrayStack(Class<T> instance) { // Конструктор по умолчанию
+        this.instance = instance;
+        arr = factory.createInstanceArray(instance, defaultCapacity);
     }
 
-    MyArrayStack(int capacity) throws Exception { // Конструктор по умолчанию
+    MyArrayStack(Class<T> instance, int capacity) throws Exception { // Конструктор по умолчанию
+        this.instance = instance;
         if (capacity <= 0) { // Неверное значение размера стека передано
-            arr = new Integer[defaultCapacity];
+            arr = factory.createInstanceArray(instance, defaultCapacity);
             throw new Exception("Invalid capacity, current capacity is 16."); // Кидаем исключение
         }
-        arr = new Integer[capacity];
+        arr = factory.createInstanceArray(instance, capacity);
         this.capacity = capacity;
     }
 
-    public void push(Integer item) throws Exception { // Вставка элемента
+    public void push(T item) throws Exception { // Вставка элемента
         if (size >= capacity) { // Стек уже полон
             throw new Exception("Stack is full"); // Кидаем исключение
         }
@@ -31,17 +35,17 @@ public class MyArrayStack {
         size++;
     }
 
-    public Integer pop() throws Exception { // Удаление элемента
+    public T pop() throws Exception { // Удаление элемента
         if (size == 0) { // Стек уже пуст
             throw new Exception("Stack is empty");// Кидаем исключение
         }
-        Integer item = arr[size - 1];
+        T item = arr[size - 1];
         arr[size - 1] = null;
         size--;
         return item;
     }
 
-    public Integer top() throws Exception { // Возврат вершины стека без удаления
+    public T top() throws Exception { // Возврат вершины стека без удаления
         if (size == 0) { // Стек уже пуст
             throw new Exception("Stack is empty"); // Кидаем исключение
         }
@@ -54,7 +58,7 @@ public class MyArrayStack {
 
     public void clear() { // Очистка стека
         if (size > 0) {
-            arr = new Integer[capacity];
+            arr = factory.createInstanceArray(instance, capacity);
             size = 0;
         }
     }
@@ -77,5 +81,12 @@ public class MyArrayStack {
         }
         str += "]"; // Закрываем массив в строке
         return str;
+    }
+}
+
+class GenericArrayFactory {
+    // Public
+    public <T> T[] createInstanceArray(Class<T> instance, int size) {
+        return (T[]) Array.newInstance(instance, size);
     }
 }

@@ -1,35 +1,33 @@
-import java.lang.Integer;
 import java.lang.String;
 import java.lang.Exception;
-import java.util.Stack;
 
-public class MyLinkedStack {
+public class MyLinkedStack<T> {
     // Private
-    private StackItem head = null;
+    private StackItem<T> head = null;
     private int size = 0;
 
     // Public
-    public void push(Integer item) { // Вставка элемента
+    public void push(T item) { // Вставка элемента
         if (head != null) { // Стек не пуст
-            StackItem newItem = new StackItem(item, head); // Вставка нового элемента со ссылкой на следующий
+            StackItem<T> newItem = new StackItem<>(item, head); // Вставка нового элемента со ссылкой на следующий
             head = newItem; // Переприсваиваем вершину стека
         } else {
-            head = new StackItem(item); // Вставка нового элемента
+            head = new StackItem<>(item); // Вставка нового элемента
         }
         size++; // Инкрементируем размер
     }
 
-    public Integer pop() throws Exception { // Удаление элемента
+    public T pop() throws Exception { // Удаление элемента
         if (head == null) { // Стек уже пуст
             throw new Exception("Stack is empty"); // Кидаем исключение
         }
-        Integer data = head.getData(); // Сохраняем данные вершины стека
+        T data = head.getData(); // Сохраняем данные вершины стека
         head = head.getNext(); // Удаляем вершину стека
         size--; // Декрементируем размер
         return data; // Возвращаем данные
     }
 
-    public Integer top() throws Exception { // Возврат вершины стека без удаления
+    public T top() throws Exception { // Возврат вершины стека без удаления
         if (head == null) { // Стек уже пуст
             throw new Exception("Stack is empty"); // Кидаем исключение
         }
@@ -73,17 +71,17 @@ public class MyLinkedStack {
     }
 }
 
-class StackItem { // Класс элемента стека
+class StackItem<T> { // Класс элемента стека
     // Private
     private StackItem next = null;
-    private Integer data;
+    private T data;
 
     // Public
-    StackItem(Integer data) {
+    StackItem(T data) {
         this.data = data;
     }
 
-    StackItem(Integer data, StackItem next) {
+    StackItem(T data, StackItem next) {
         this.next = next;
         this.data = data;
     }
@@ -92,7 +90,7 @@ class StackItem { // Класс элемента стека
         return next;
     } // Возврат ссылки на следующий элемент
 
-    public Integer getData() {
+    public T getData() {
         return data;
     } // Возврат данных
 
