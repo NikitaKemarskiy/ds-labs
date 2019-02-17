@@ -1,5 +1,10 @@
+package com.stack;// My personal classes
+import com.exception.CopyingStackException;
+import com.exception.EmptyStackException;
+import com.exception.FullStackException;
+
+// Java classes
 import java.lang.String;
-import java.lang.Exception;
 
 public class MyLinkedStack<T> implements MyStack<T> {
     // Private
@@ -7,6 +12,16 @@ public class MyLinkedStack<T> implements MyStack<T> {
     private int size = 0;
 
     // Public
+    public MyLinkedStack() {}
+
+    public MyLinkedStack(MyStack<T> myStack) throws CopyingStackException {
+        try {
+            this.copyStack(myStack);
+        } catch (CopyingStackException err) {
+            throw err;
+        }
+    }
+
     public void push(T item) { // Вставка элемента
         if (head != null) { // Стек не пуст
             StackItem<T> newItem = new StackItem<>(item, head); // Вставка нового элемента со ссылкой на следующий
@@ -17,9 +32,9 @@ public class MyLinkedStack<T> implements MyStack<T> {
         size++; // Инкрементируем размер
     }
 
-    public T pop() throws Exception { // Удаление элемента
+    public T pop() throws EmptyStackException { // Удаление элемента
         if (head == null) { // Стек уже пуст
-            throw new Exception("Stack is empty"); // Кидаем исключение
+            throw new EmptyStackException("Stack is empty"); // Кидаем исключение
         }
         T data = head.getData(); // Сохраняем данные вершины стека
         head = head.getNext(); // Удаляем вершину стека
@@ -27,9 +42,9 @@ public class MyLinkedStack<T> implements MyStack<T> {
         return data; // Возвращаем данные
     }
 
-    public T top() throws Exception { // Возврат вершины стека без удаления
+    public T top() throws EmptyStackException { // Возврат вершины стека без удаления
         if (head == null) { // Стек уже пуст
-            throw new Exception("Stack is empty"); // Кидаем исключение
+            throw new EmptyStackException("Stack is empty"); // Кидаем исключение
         }
         return head.getData(); // Возвращаем вершину стека
     }
@@ -68,6 +83,34 @@ public class MyLinkedStack<T> implements MyStack<T> {
         }
         str += "]"; // Закрываем массив в строке
         return str;
+    }
+
+    public void copyStack(MyStack<T> myStack) throws CopyingStackException { // Копирование стека
+        MyStack<T> buffer = new MyLinkedStack<>(); // Буферный стек для копирования
+
+        while (!myStack.isEmpty()) {
+            try {
+                buffer.push(myStack.pop());
+            } catch (FullStackException | EmptyStackException err) {
+                throw new CopyingStackException(err.getMessage());
+            }
+        }
+
+        this.clear(); // Очистка стека
+
+        while (!buffer.isEmpty()) { // Перенос элементов из буфера в текущий стек
+            try {
+                T item = buffer.pop();
+                this.push(item);
+                try {
+                    myStack.push(item);
+                } catch (FullStackException err) {
+                    throw new CopyingStackException("Copied stack can't be filled with items again");
+                }
+            } catch (EmptyStackException err) {
+                throw new CopyingStackException("Copied stack is already empty");
+            }
+        }
     }
 }
 
