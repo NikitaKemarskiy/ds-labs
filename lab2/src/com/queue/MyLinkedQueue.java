@@ -111,37 +111,6 @@ public class MyLinkedQueue implements MyQueue {
         return size > 0 ? false : true;
     }
 
-    public int indexOf(int item) {
-        MyLinkedQueue buffer = new MyLinkedQueue();
-        int index = -1;
-        int currentIndex = 0;
-
-        while (!this.isEmpty()) {
-            try {
-                if (this.front() == item) {
-                    index = currentIndex;
-                    break;
-                }
-                buffer.push_back(this.pop_front());
-                currentIndex++;
-            } catch (EmptyQueueException err) {
-                System.out.println(err.getMessage());
-                break;
-            }
-        }
-
-        while (!buffer.isEmpty()) {
-            try {
-                this.push_front(buffer.pop_back());
-            } catch (EmptyQueueException err) {
-                System.out.println(err.getMessage());
-                break;
-            }
-        }
-
-        return index;
-    }
-
     public int valueOf(int index) throws InvalidIndexException {
         if (index >= size || index < 0) {
             throw new InvalidIndexException("Invalid index was passed.");
@@ -169,38 +138,9 @@ public class MyLinkedQueue implements MyQueue {
         return val;
     }
 
-    public void delete(int index) throws InvalidIndexException {
-        if (index >= size || index < 0) {
-            throw new InvalidIndexException("Invalid index was passed.");
-        }
-        MyLinkedQueue buffer = new MyLinkedQueue();
-
-        for (int i = 0; i < index; i++) {
-            try {
-                buffer.push_back(this.pop_front());
-            } catch (EmptyQueueException err) {
-                throw new InvalidIndexException("Invalid index was passed");
-            }
-        }
-
-        try {
-            this.pop_front();
-        } catch (EmptyQueueException err) {
-            throw new InvalidIndexException("Invalid index was passed");
-        }
-
-        while (!buffer.isEmpty()) {
-            try {
-                this.push_front(buffer.pop_back());
-            } catch (EmptyQueueException err) {
-                throw new InvalidIndexException("Invalid index was passed");
-            }
-        }
-    }
-
     public void randomFill(int n) {
         for (int i = 0; i < n; i++) {
-            this.push_back((int)(Math.random() * 100));
+            this.push_back((int)(Math.random() * 10));
         }
     }
 

@@ -21,11 +21,7 @@ public interface MyQueue {
 
     boolean isEmpty(); // Проверка пуста ли очередь
 
-    int indexOf(int val);
-
     int valueOf(int index) throws InvalidIndexException;
-
-    void delete(int index) throws InvalidIndexException;
 
     void randomFill(int n) throws FullQueueException;
 

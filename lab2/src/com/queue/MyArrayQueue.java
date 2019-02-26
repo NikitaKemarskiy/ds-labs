@@ -8,7 +8,7 @@ import java.lang.Math;
 
 public class MyArrayQueue implements MyQueue {
     // Private
-    private static int defaultCapacity = 12; // Размер очереди по умолчанию
+    private static int defaultCapacity = 20; // Размер очереди по умолчанию
     private int[] arr;
     private int size = 0;
     private int capacity = defaultCapacity;
@@ -75,7 +75,7 @@ public class MyArrayQueue implements MyQueue {
         if (size <= 0) {
             throw new EmptyQueueException("Queue is empty");
         }
-        return arr[back];
+        return arr[back == 0 ? capacity - 1 : back - 1];
     }
 
     public int front() throws EmptyQueueException { // Возврат начала очереди без удаления
@@ -89,6 +89,8 @@ public class MyArrayQueue implements MyQueue {
         return size;
     }
 
+    public int capacity() { return capacity; }
+
     public void clear() { // Очистка очереди
         size = 0;
         back = 0;
@@ -97,43 +99,6 @@ public class MyArrayQueue implements MyQueue {
 
     public boolean isEmpty() { // Проверка пуста ли очередь
         return size > 0 ? false : true;
-    }
-
-    public int indexOf(int item) {
-        MyArrayQueue buffer = null;
-        try {
-            buffer = new MyArrayQueue(capacity);
-        } catch (InvalidCapacityException err) {
-            System.out.println(err.getMessage());
-        }
-
-        int index = -1;
-        int currentIndex = 0;
-
-        while (!this.isEmpty()) {
-            try {
-                if (this.front() == item) {
-                    index = currentIndex;
-                    break;
-                }
-                buffer.push_back(this.pop_front());
-                currentIndex++;
-            } catch (FullQueueException | EmptyQueueException err) {
-                System.out.println(err.getMessage());
-                break;
-            }
-        }
-
-        while (!buffer.isEmpty()) {
-            try {
-                this.push_front(buffer.pop_back());
-            } catch (FullQueueException | EmptyQueueException err) {
-                System.out.println(err.getMessage());
-                break;
-            }
-        }
-
-        return index;
     }
 
     public int valueOf(int index) throws InvalidIndexException {
@@ -175,47 +140,12 @@ public class MyArrayQueue implements MyQueue {
         return val;
     }
 
-    public void delete(int index) throws InvalidIndexException {
-        if (index >= size || index < 0) {
-            throw new InvalidIndexException("Invalid index was passed.");
-        }
-
-        MyArrayQueue buffer = null;
-        try {
-            buffer = new MyArrayQueue(capacity);
-        } catch (InvalidCapacityException err) {
-            System.out.println(err.getMessage());
-        }
-
-        for (int i = 0; i < index; i++) {
-            try {
-                buffer.push_back(this.pop_front());
-            } catch (FullQueueException | EmptyQueueException err) {
-                throw new InvalidIndexException("Invalid index was passed");
-            }
-        }
-
-        try {
-            this.pop_front();
-        } catch (EmptyQueueException err) {
-            throw new InvalidIndexException("Invalid index was passed");
-        }
-
-        while (!buffer.isEmpty()) {
-            try {
-                this.push_front(buffer.pop_back());
-            } catch (FullQueueException | EmptyQueueException err) {
-                throw new InvalidIndexException("Invalid index was passed");
-            }
-        }
-    }
-
     public void randomFill(int n) throws FullQueueException {
         if (n > (capacity - size)) {
             int diff = capacity - size;
             for (int i = 0; i < diff; i++) {
                 try {
-                    this.push_back((int)(Math.random() * 100));
+                    this.push_back((int)(Math.random() * 10));
                 } catch (FullQueueException err) {
                     throw err;
                 }
@@ -223,7 +153,7 @@ public class MyArrayQueue implements MyQueue {
         } else {
             for (int i = 0; i < n; i++) {
                 try {
-                    this.push_back((int)(Math.random() * 100));
+                    this.push_back((int)(Math.random() * 10));
                 } catch (FullQueueException err) {
                     throw err;
                 }
