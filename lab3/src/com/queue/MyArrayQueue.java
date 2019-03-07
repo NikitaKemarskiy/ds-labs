@@ -4,7 +4,10 @@ import com.exception.*;
 
 public class MyArrayQueue {
     // Private
-    //...
+    private static int defaultCapacity = 20; // Размер очереди по умолчанию
+    private int[] arr;
+    private int capacity = defaultCapacity;
+    private int size = 0;
 
     // Constructors
     //...
