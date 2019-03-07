@@ -1,4 +1,4 @@
-package com.queue;
+package com.deque;
 
 // Мои классы
 import com.exception.*;
@@ -6,7 +6,7 @@ import com.exception.*;
 // Классы Java
 import java.lang.Math;
 
-public class MyArrayQueue implements MyQueue {
+public class MyArrayDeque implements MyDeque {
     // Private
     private static int defaultCapacity = 20; // Размер очереди по умолчанию
     private int[] arr;
@@ -16,11 +16,11 @@ public class MyArrayQueue implements MyQueue {
     private int front = 0;
 
     // Public
-    public MyArrayQueue() { // Конструктор по умолчанию
+    public MyArrayDeque() { // Конструктор по умолчанию
         arr = new int[capacity];
     }
 
-    public MyArrayQueue(int capacity) throws InvalidCapacityException { // Конструктор с передачей вместимости
+    public MyArrayDeque(int capacity) throws InvalidCapacityException { // Конструктор с передачей вместимости
         if (capacity <= 0) {
             this.capacity = defaultCapacity;
             arr = new int[this.capacity];
@@ -30,57 +30,57 @@ public class MyArrayQueue implements MyQueue {
         arr = new int[capacity];
     }
 
-    public void push_back(int item) throws FullQueueException { // Вставка элемента в конец очереди
+    public void push_back(int item) throws FullDequeException { // Вставка элемента в конец очереди
         if (size < capacity) {
             arr[back] = item;
             back = back >= capacity - 1 ? 0 : back + 1;
             size++;
         } else {
-            throw new FullQueueException("Queue is already full");
+            throw new FullDequeException("Queue is already full");
         }
     }
 
-    public void push_front(int item) throws FullQueueException { // Вставка элемента в начало очереди
+    public void push_front(int item) throws FullDequeException { // Вставка элемента в начало очереди
         if (size < capacity) {
             front = front == 0 ? capacity - 1 : front - 1;
             arr[front] = item;
             size++;
         } else {
-            throw new FullQueueException("Queue is already full");
+            throw new FullDequeException("Queue is already full");
         }
     }
 
-    public int pop_back() throws EmptyQueueException { // Удаление элемента в конце очереди
+    public int pop_back() throws EmptyDequeException { // Удаление элемента в конце очереди
         if (size > 0) {
             back = back == 0 ? capacity - 1 : back - 1;
             size--;
             return arr[back];
         } else {
-            throw new EmptyQueueException("Queue is already empty");
+            throw new EmptyDequeException("Queue is already empty");
         }
     }
 
-    public int pop_front() throws EmptyQueueException { // Удаление элемента в начале очереди
+    public int pop_front() throws EmptyDequeException { // Удаление элемента в начале очереди
         if (size > 0) {
             int val = arr[front];
             front = front >= capacity - 1 ? 0 : front + 1;
             size--;
             return val;
         } else {
-            throw new EmptyQueueException("Queue is already empty");
+            throw new EmptyDequeException("Queue is already empty");
         }
     }
 
-    public int back() throws EmptyQueueException { // Возврат конца очереди без удаления
+    public int back() throws EmptyDequeException { // Возврат конца очереди без удаления
         if (size <= 0) {
-            throw new EmptyQueueException("Queue is empty");
+            throw new EmptyDequeException("Queue is empty");
         }
         return arr[back == 0 ? capacity - 1 : back - 1];
     }
 
-    public int front() throws EmptyQueueException { // Возврат начала очереди без удаления
+    public int front() throws EmptyDequeException { // Возврат начала очереди без удаления
         if (size <= 0) {
-            throw new EmptyQueueException("Queue is empty");
+            throw new EmptyDequeException("Queue is empty");
         }
         return arr[front];
     }
@@ -106,9 +106,9 @@ public class MyArrayQueue implements MyQueue {
             throw new InvalidIndexException("Invalid index was passed.");
         }
 
-        MyArrayQueue buffer = null;
+        MyArrayDeque buffer = null;
         try {
-            buffer = new MyArrayQueue(capacity);
+            buffer = new MyArrayDeque(capacity);
         } catch (InvalidCapacityException err) {
             System.out.println(err.getMessage());
         }
@@ -116,7 +116,7 @@ public class MyArrayQueue implements MyQueue {
         for (int i = 0; i < index; i++) {
             try {
                 buffer.push_back(this.pop_front());
-            } catch (FullQueueException | EmptyQueueException err) {
+            } catch (FullDequeException | EmptyDequeException err) {
                 throw new InvalidIndexException("Invalid index was passed");
             }
         }
@@ -125,14 +125,14 @@ public class MyArrayQueue implements MyQueue {
 
         try {
             val = this.front();
-        } catch (EmptyQueueException err) {
+        } catch (EmptyDequeException err) {
             throw new InvalidIndexException("Invalid index was passed");
         }
 
         while (!buffer.isEmpty()) {
             try {
                 this.push_front(buffer.pop_back());
-            } catch (FullQueueException | EmptyQueueException err) {
+            } catch (FullDequeException | EmptyDequeException err) {
                 throw new InvalidIndexException("Invalid index was passed");
             }
         }
@@ -140,13 +140,13 @@ public class MyArrayQueue implements MyQueue {
         return val;
     }
 
-    public void randomFill(int n) throws FullQueueException {
+    public void randomFill(int n) throws FullDequeException {
         if (n > (capacity - size)) {
             int diff = capacity - size;
             for (int i = 0; i < diff; i++) {
                 try {
                     this.push_back((int)(Math.random() * 10));
-                } catch (FullQueueException err) {
+                } catch (FullDequeException err) {
                     throw err;
                 }
             }
@@ -154,7 +154,7 @@ public class MyArrayQueue implements MyQueue {
             for (int i = 0; i < n; i++) {
                 try {
                     this.push_back((int)(Math.random() * 10));
-                } catch (FullQueueException err) {
+                } catch (FullDequeException err) {
                     throw err;
                 }
             }

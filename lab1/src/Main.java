@@ -31,6 +31,9 @@ public class Main {
             System.out.println(err.getMessage());
         }
 
+        System.out.println(arrayStack.toString());
+        System.out.println("Max index: " + maxIndex + ", insert item '0' at maxIndex + 1");
+
         try {
             MyStackProcessing.insert(arrayStack, 0, maxIndex + 1);
         } catch (InvalidIndexException | EmptyStackException | FullStackException err) {
@@ -38,6 +41,5 @@ public class Main {
         }
 
         System.out.println(arrayStack.toString());
-        System.out.println("Max index: " + maxIndex);
     }
 }

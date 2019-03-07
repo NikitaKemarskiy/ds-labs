@@ -1,4 +1,4 @@
-package com.queue;
+package com.deque;
 
 // Мои классы
 import com.exception.*;
@@ -7,22 +7,22 @@ import com.exception.*;
 import java.lang.Math;
 
 
-public class MyLinkedQueue implements MyQueue {
+public class MyLinkedDeque implements MyDeque {
     // Private
     private int size = 0;
-    private QueueItem back = null;
-    private QueueItem front = null;
+    private DequeItem back = null;
+    private DequeItem front = null;
 
     // Public
-    public MyLinkedQueue() { // Конструктор по умолчанию
+    public MyLinkedDeque() { // Конструктор по умолчанию
     }
 
     public void push_back(int item) { // Вставка элемента в конец очереди
         if (back == null) {
-            back = new QueueItem(item);
+            back = new DequeItem(item);
             front = back;
         } else {
-            QueueItem newItem = new QueueItem(item, back, null);
+            DequeItem newItem = new DequeItem(item, back, null);
             back.setNext(newItem);
             back = newItem;
         }
@@ -31,21 +31,21 @@ public class MyLinkedQueue implements MyQueue {
 
     public void push_front(int item) { // Вставка элемента в начало очереди
         if (front == null) {
-            front = new QueueItem(item);
+            front = new DequeItem(item);
             back = front;
         } else {
-            QueueItem newItem = new QueueItem(item, null, front);
+            DequeItem newItem = new DequeItem(item, null, front);
             front.setPrev(newItem);
             front = newItem;
         }
         size++;
     }
 
-    public int pop_back() throws EmptyQueueException { // Удаление элемента в конце очереди
+    public int pop_back() throws EmptyDequeException { // Удаление элемента в конце очереди
         if (back == null) {
-            throw new EmptyQueueException("Queue is already empty.");
+            throw new EmptyDequeException("Queue is already empty.");
         }
-        QueueItem oldItem = back;
+        DequeItem oldItem = back;
         back = back.getPrev();
         if (back != null) {
             back.setNext(null);
@@ -57,11 +57,11 @@ public class MyLinkedQueue implements MyQueue {
         return oldItem.getData();
     }
 
-    public int pop_front() throws EmptyQueueException { // Удаление элемента в начале очереди
+    public int pop_front() throws EmptyDequeException { // Удаление элемента в начале очереди
         if (front == null) {
-            throw new EmptyQueueException("Queue is already empty.");
+            throw new EmptyDequeException("Queue is already empty.");
         }
-        QueueItem oldItem = front;
+        DequeItem oldItem = front;
         front = front.getNext();
         if (front != null) {
             front.setPrev(null);
@@ -73,16 +73,16 @@ public class MyLinkedQueue implements MyQueue {
         return oldItem.getData();
     }
 
-    public int back() throws EmptyQueueException { // Возврат конца очереди без удаления
+    public int back() throws EmptyDequeException { // Возврат конца очереди без удаления
         if (back == null) {
-            throw new EmptyQueueException("Queue is already empty.");
+            throw new EmptyDequeException("Queue is already empty.");
         }
         return back.getData();
     }
 
-    public int front() throws EmptyQueueException { // Возврат начала очереди без удаления
+    public int front() throws EmptyDequeException { // Возврат начала очереди без удаления
         if (front == null) {
-            throw new EmptyQueueException("Queue is already empty.");
+            throw new EmptyDequeException("Queue is already empty.");
         }
         return front.getData();
     }
@@ -92,13 +92,13 @@ public class MyLinkedQueue implements MyQueue {
     }
 
     public void clear() { // Очистка очереди
-        QueueItem current = front;
+        DequeItem current = front;
         front = null;
         back = null;
         size = 0;
 
         while (current != null) {
-            QueueItem buffer = current;
+            DequeItem buffer = current;
             current = current.getNext();
             buffer.setNext(null);
             if (current != null) {
@@ -115,12 +115,12 @@ public class MyLinkedQueue implements MyQueue {
         if (index >= size || index < 0) {
             throw new InvalidIndexException("Invalid index was passed.");
         }
-        MyLinkedQueue buffer = new MyLinkedQueue();
+        MyLinkedDeque buffer = new MyLinkedDeque();
 
         for (int i = 0; i < index; i++) {
             try {
                 buffer.push_back(this.pop_front());
-            } catch (EmptyQueueException err) {
+            } catch (EmptyDequeException err) {
                 throw new InvalidIndexException("Invalid index was passed");
             }
         }
@@ -130,7 +130,7 @@ public class MyLinkedQueue implements MyQueue {
         while (!buffer.isEmpty()) {
             try {
                 this.push_front(buffer.pop_back());
-            } catch (EmptyQueueException err) {
+            } catch (EmptyDequeException err) {
                 throw new InvalidIndexException("Invalid index was passed");
             }
         }
@@ -146,7 +146,7 @@ public class MyLinkedQueue implements MyQueue {
 
     public String toString() { // Привести очередь к строке
         String str = "["; // Открываем массив в строке
-        QueueItem current = front;
+        DequeItem current = front;
 
         while (current != back) {
             str += current.getData() + ", "; // Добавляем помимо элемента запятую с пробелом в конце
@@ -162,40 +162,40 @@ public class MyLinkedQueue implements MyQueue {
     }
 }
 
-class QueueItem {
+class DequeItem {
     // Private
     int data = 0;
-    QueueItem next = null;
-    QueueItem prev = null;
+    DequeItem next = null;
+    DequeItem prev = null;
 
     // Public
-    QueueItem () {
+    DequeItem() {
         data = 0;
     }
 
-    QueueItem (int data) {
+    DequeItem(int data) {
         this.data = data;
     }
 
-    QueueItem (int data, QueueItem prev, QueueItem next) {
+    DequeItem(int data, DequeItem prev, DequeItem next) {
         this.data = data;
         this.prev = prev;
         this.next = next;
     }
 
-    public void setNext(QueueItem next) {
+    public void setNext(DequeItem next) {
         this.next = next;
     }
 
-    public void setPrev(QueueItem prev) {
+    public void setPrev(DequeItem prev) {
         this.prev = prev;
     }
 
-    public QueueItem getNext() {
+    public DequeItem getNext() {
         return next;
     }
 
-    public QueueItem getPrev() {
+    public DequeItem getPrev() {
         return prev;
     }
 

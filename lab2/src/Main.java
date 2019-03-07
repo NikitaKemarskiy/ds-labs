@@ -1,14 +1,15 @@
-import com.queue.*;
+import com.deque.*;
 import com.exception.*;
 
 public class Main {
     public static void main(String[] args) {
-        MyArrayQueue arrayQueue = new MyArrayQueue();
-        MyLinkedQueue linkedQueue = new MyLinkedQueue();
+        //MyArrayDeque arrayDeque = new MyArrayDeque();
+        MyLinkedDeque linkedDeque = new MyLinkedDeque();
 
-        linkedQueue.randomFill(20);
+        linkedDeque.randomFill(20);
+
         /*try {
-            arrayQueue.randomFill(15);
+            arrayDeque.randomFill(15);
         } catch (FullQueueException err) {
             System.out.println(err.getMessage());
         }*/
@@ -17,32 +18,32 @@ public class Main {
         int middle = 0;
         int last = 0;
         int currentIndex = 0;
-        int initSize = linkedQueue.size();
+        int initSize = linkedDeque.size();
 
         try {
-            first = linkedQueue.front();
-            last = linkedQueue.back();
-            middle = linkedQueue.valueOf((linkedQueue.size() - 1) / 2);
-        } catch (EmptyQueueException | InvalidIndexException err) {
+            first = linkedDeque.front();
+            last = linkedDeque.back();
+            middle = linkedDeque.valueOf((linkedDeque.size() - 1) / 2);
+        } catch (EmptyDequeException | InvalidIndexException err) {
             System.out.println(err.getMessage());
         }
 
-        System.out.println(linkedQueue.toString() + ", size: " + linkedQueue.size());
+        System.out.println(linkedDeque.toString() + ", size: " + linkedDeque.size());
         System.out.println("First: " + first + ", middle: " + middle + ", last: " + last);
 
-        MyLinkedQueue buffer = new MyLinkedQueue();
-        /*MyArrayQueue buffer = null;
+        MyLinkedDeque buffer = new MyLinkedDeque();
+        /*MyArrayDeque buffer = null;
         try {
-            buffer = new MyArrayQueue(arrayQueue.capacity());
+            buffer = new MyArrayDeque(linkedDeque.capacity());
         } catch (InvalidCapacityException err) {
             System.out.println(err.getMessage());
         }*/
 
-        while (!linkedQueue.isEmpty()) {
+        while (!linkedDeque.isEmpty()) {
             int item = 0;
             try {
-                item = linkedQueue.pop_front();
-            } catch (EmptyQueueException err) {
+                item = linkedDeque.pop_front();
+            } catch (EmptyDequeException err) {
                 System.out.println(err.getMessage());
                 break;
             }
