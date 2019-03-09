@@ -3,7 +3,7 @@ package com.queue;
 import com.exception.*;
 
 public interface MyQueue {
-    void push(int item) throws FullQueueException; // Вставка элемента в конец очереди
+    void push(int data) throws FullQueueException; // Вставка элемента в конец очереди
 
     int pop() throws EmptyQueueException; // Удаление элемента в начале очереди
 

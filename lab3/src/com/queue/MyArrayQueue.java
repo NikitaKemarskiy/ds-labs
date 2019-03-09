@@ -26,11 +26,11 @@ public class MyArrayQueue implements MyQueue {
     }
 
     // Public
-    public void push(int item) throws FullQueueException { // Вставка элемента в конец очереди
+    public void push(int data) throws FullQueueException { // Вставка элемента в конец очереди
         if (size >= capacity || back >= capacity) {
             throw new FullQueueException("Error: queue is already full." + " back: " + back + ", front: " + front + ", size: " + size);
         }
-        arr[back] = item;
+        arr[back] = data;
         size++;
 
         back = back == capacity - 1 ? 0 : back + 1;

@@ -4,11 +4,10 @@ import com.exception.EmptyQueueException;
 import com.exception.InvalidIndexException;
 
 public class MyLinkedQueue implements MyQueue {
-    // Private
-
-    private QueueItem front;
-    private QueueItem back;
-    private int size = 0;
+    // Protected
+    protected QueueItem front;
+    protected QueueItem back;
+    protected int size = 0;
 
     // Constructors
     public MyLinkedQueue() {
@@ -17,15 +16,15 @@ public class MyLinkedQueue implements MyQueue {
     }
 
     // Public
-    public void push(int item) { // Вставка элемента в конец очереди
+    public void push(int data) { // Вставка элемента в конец очереди
         size++;
         if (front == null) {
-            front = new QueueItem(item);
+            front = new QueueItem(data);
             back = front;
             return;
         }
         QueueItem prev = back;
-        back = new QueueItem(item, prev, null);
+        back = new QueueItem(data, prev, null);
         prev.setNext(back);
     }
 
@@ -110,52 +109,6 @@ public class MyLinkedQueue implements MyQueue {
         str += "]"; // Закрываем массив в строке
 
         return str;
-    }
-}
-
-class QueueItem {
-    // Private
-    int data;
-    QueueItem next;
-    QueueItem prev;
-
-    // Public
-    QueueItem() {
-        data = 0;
-        prev = null;
-        next = null;
-    }
-
-    QueueItem(int data) {
-        this.data = data;
-        prev = null;
-        next = null;
-    }
-
-    QueueItem(int data, QueueItem prev, QueueItem next) {
-        this.data = data;
-        this.prev = prev;
-        this.next = next;
-    }
-
-    public void setPrev(QueueItem prev) {
-        this.prev = prev;
-    }
-
-    public void setNext(QueueItem next) {
-        this.next = next;
-    }
-
-    public QueueItem getNext() {
-        return next;
-    }
-
-    public QueueItem getPrev() {
-        return prev;
-    }
-
-    public int getData() {
-        return data;
     }
 }
 
