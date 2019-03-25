@@ -2,9 +2,40 @@ package com.tree;
 
 import com.exception.*;
 
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Queue;
+
 public class BinaryTree {
     // Private
     private BinaryTreeItem root = null;
+
+    static private void infix(BinaryTreeItem item, Queue queue) {
+        if (item == null) {
+            return;
+        }
+        infix(item.leftChild, queue);
+        queue.add(item.getData());
+        infix(item.rightChild, queue);
+    }
+
+    static private void prefix(BinaryTreeItem item, Queue queue) {
+        if (item == null) {
+            return;
+        }
+        queue.add(item.getData());
+        prefix(item.leftChild, queue);
+        prefix(item.rightChild, queue);
+    }
+
+    static private void postfix(BinaryTreeItem item, Queue queue) {
+        if (item == null) {
+            return;
+        }
+        postfix(item.leftChild, queue);
+        postfix(item.rightChild, queue);
+        queue.add(item.getData());
+    }
 
     // Public
     public BinaryTree() {}
@@ -14,11 +45,14 @@ public class BinaryTree {
         BinaryTreeItem curr = root;
         BinaryTreeItem parent = null;
         boolean isLeft = false;
+        int height = 0;
+
         while (curr != null) {
             if (item == curr.getData()) {
                 throw new InvalidItemException("Invalid item was passed.");
             }
             parent = curr;
+            height++;
             if (item < curr.getData()) {
                 isLeft = true;
                 curr = curr.getLeftChild();
@@ -27,7 +61,8 @@ public class BinaryTree {
                 curr = curr.getRightChild();
             }
         }
-        curr = new BinaryTreeItem(item, parent);
+        curr = new BinaryTreeItem(item, height, parent);
+        // System.out.println("=> " + item + " was inserted, height: " + height);
         if (curr.hasParent()) { // Current has parent
             if (isLeft) {
                 parent.setLeftChild(curr);
@@ -104,5 +139,23 @@ public class BinaryTree {
             curr = item < curr.getData() ? curr.getLeftChild() : curr.getRightChild();
         }
         return false;
+    }
+
+    public Iterator<Integer> infixIterator() {
+        Queue<Integer> queue = new LinkedList<>();
+        infix(root, queue);
+        return queue.iterator();
+    }
+
+    public Iterator<Integer> prefixIterator() {
+        Queue<Integer> queue = new LinkedList<>();
+        prefix(root, queue);
+        return queue.iterator();
+    }
+
+    public Iterator<Integer> postfixIterator() {
+        Queue<Integer> queue = new LinkedList<>();
+        postfix(root, queue);
+        return queue.iterator();
     }
 }
