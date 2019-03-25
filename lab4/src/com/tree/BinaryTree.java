@@ -15,7 +15,8 @@ public class BinaryTree {
             return;
         }
         infix(item.leftChild, queue);
-        queue.add(item.getData());
+        queue.add("=> Data: " + item.getData() + ", height: " + item.getHeight());
+        //queue.add(item.getData());
         infix(item.rightChild, queue);
     }
 
@@ -23,7 +24,8 @@ public class BinaryTree {
         if (item == null) {
             return;
         }
-        queue.add(item.getData());
+        queue.add("=> Data: " + item.getData() + ", height: " + item.getHeight());
+        //queue.add(item.getData());
         prefix(item.leftChild, queue);
         prefix(item.rightChild, queue);
     }
@@ -34,7 +36,22 @@ public class BinaryTree {
         }
         postfix(item.leftChild, queue);
         postfix(item.rightChild, queue);
-        queue.add(item.getData());
+        queue.add("=> Data: " + item.getData() + ", height: " + item.getHeight());
+        //queue.add(item.getData());
+    }
+
+    static private int balanceFactor(BinaryTreeItem item) {
+        return height(item.getRightChild()) - height(item.getLeftChild());
+    }
+
+    static private int height(BinaryTreeItem item) {
+        return item != null ? item.getHeight() : 0;
+    }
+
+    static private void fixHeight(BinaryTreeItem item) {
+        int leftHeight = height(item.getLeftChild());
+        int rightHeight = height(item.getRightChild());
+        item.setHeight((leftHeight > rightHeight ? leftHeight : rightHeight) + 1);
     }
 
     // Public
@@ -44,33 +61,39 @@ public class BinaryTree {
     public void insert(int item) throws InvalidItemException { // Insert an item
         BinaryTreeItem curr = root;
         BinaryTreeItem parent = null;
-        boolean isLeft = false;
-        int height = 0;
 
         while (curr != null) {
             if (item == curr.getData()) {
                 throw new InvalidItemException("Invalid item was passed.");
             }
             parent = curr;
-            height++;
             if (item < curr.getData()) {
-                isLeft = true;
                 curr = curr.getLeftChild();
             } else {
-                isLeft = false;
                 curr = curr.getRightChild();
             }
         }
-        curr = new BinaryTreeItem(item, height, parent);
-        // System.out.println("=> " + item + " was inserted, height: " + height);
+
+        curr = new BinaryTreeItem(item, parent); // New BinaryTreeItem
+
         if (curr.hasParent()) { // Current has parent
-            if (isLeft) {
+            if (item < parent.getData()) { // Current is a left child
                 parent.setLeftChild(curr);
-            } else {
+            } else { // Current is a right child
                 parent.setRightChild(curr);
             }
         } else { // Current has no parent
             root = curr; // Assign current as a root
+        }
+
+        int iterations = 1;
+
+        while (parent != null) { // Increment heights of all the parental BinaryTreeItems
+            iterations++;
+            if (iterations > height(parent)) {
+                parent.setHeight(height(parent) + 1);
+            }
+            parent = parent.getParent();
         }
     }
 
@@ -141,21 +164,56 @@ public class BinaryTree {
         return false;
     }
 
-    public Iterator<Integer> infixIterator() {
-        Queue<Integer> queue = new LinkedList<>();
+    public Iterator<String> infixIterator() {
+        Queue<String> queue = new LinkedList<>();
         infix(root, queue);
         return queue.iterator();
     }
 
-    public Iterator<Integer> prefixIterator() {
-        Queue<Integer> queue = new LinkedList<>();
+    public Iterator<String> prefixIterator() {
+        Queue<String> queue = new LinkedList<>();
         prefix(root, queue);
         return queue.iterator();
     }
 
-    public Iterator<Integer> postfixIterator() {
-        Queue<Integer> queue = new LinkedList<>();
+    public Iterator<String> postfixIterator() {
+        Queue<String> queue = new LinkedList<>();
         postfix(root, queue);
         return queue.iterator();
+    }
+
+    static BinaryTreeItem rotateRight(BinaryTreeItem item) {
+        BinaryTreeItem leftChild = item.getLeftChild();
+        item.setLeftChild(leftChild.getRightChild());
+        leftChild.setRightChild(item);
+        fixHeight(item);
+        fixHeight(leftChild);
+        return leftChild;
+    }
+
+    static BinaryTreeItem rotateLeft(BinaryTreeItem item) {
+        BinaryTreeItem rightChild = item.getRightChild();
+        item.setRightChild(rightChild.getLeftChild());
+        rightChild.setLeftChild(item);
+        fixHeight(item);
+        fixHeight(rightChild);
+        return rightChild;
+    }
+
+    static BinaryTreeItem balance(BinaryTreeItem item) {
+        fixHeight(item);
+        if (balanceFactor(item) == 2) {
+            if (balanceFactor(item.getRightChild()) < 0) {
+                item.setRightChild(rotateRight(item.getRightChild()));
+            }
+            return rotateLeft(item);
+        }
+        if (balanceFactor(item) == -2) {
+            if (balanceFactor(item.getLeftChild()) > 0) {
+                item.setLeftChild(rotateLeft(item.getLeftChild()));
+            }
+            return rotateRight(item);
+        }
+        return item; // Balance isn't needed
     }
 }

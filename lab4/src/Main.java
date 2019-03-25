@@ -24,31 +24,10 @@ public class Main {
             System.exit(1);
         }
 
-        // Infix
-        System.out.println("Infix:");
-        Iterator<Integer> infix = tree.infixIterator();
+        Iterator<String> infix = tree.infixIterator();
 
         while (infix.hasNext()) {
             System.out.println("=> Item: " + infix.next());
         }
-        System.out.println("======================");
-
-        // Prefix
-        System.out.println("Prefix:");
-        Iterator<Integer> prefix = tree.prefixIterator();
-
-        while (prefix.hasNext()) {
-            System.out.println("=> Item: " + prefix.next());
-        }
-        System.out.println("======================");
-
-        // Postfix
-        System.out.println("Postfix:");
-        Iterator<Integer> postfix = tree.postfixIterator();
-
-        while (postfix.hasNext()) {
-            System.out.println("=> Item: " + postfix.next());
-        }
-        System.out.println("======================");
     }
 }

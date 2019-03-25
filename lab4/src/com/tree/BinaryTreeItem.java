@@ -3,27 +3,24 @@ package com.tree;
 class BinaryTreeItem {
     // Private
     int data;
-    int height;
+    int height = 1;
     BinaryTreeItem parent = null;
     BinaryTreeItem leftChild = null;
     BinaryTreeItem rightChild = null;
 
     // Public
     // Constructors
-    BinaryTreeItem(int data, int height) {
+    BinaryTreeItem(int data) {
         this.data = data;
-        this.height = height;
     }
 
-    BinaryTreeItem(int data, int height, BinaryTreeItem parent) {
+    BinaryTreeItem(int data, BinaryTreeItem parent) {
         this.data = data;
-        this.height = height;
         this.parent = parent;
     }
 
-    BinaryTreeItem(int data, int height, BinaryTreeItem parent, BinaryTreeItem leftChild, BinaryTreeItem rightChild) {
+    BinaryTreeItem(int data, BinaryTreeItem parent, BinaryTreeItem leftChild, BinaryTreeItem rightChild) {
         this.data = data;
-        this.height = height;
         this.parent = parent;
         this.leftChild = leftChild;
         this.rightChild = rightChild;
