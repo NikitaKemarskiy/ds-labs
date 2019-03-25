@@ -15,8 +15,7 @@ public class BinaryTree {
             return;
         }
         infix(item.leftChild, queue);
-        queue.add("=> Data: " + item.getData() + ", height: " + item.getHeight());
-        //queue.add(item.getData());
+        queue.add(item.getData());
         infix(item.rightChild, queue);
     }
 
@@ -24,8 +23,7 @@ public class BinaryTree {
         if (item == null) {
             return;
         }
-        queue.add("=> Data: " + item.getData() + ", height: " + item.getHeight());
-        //queue.add(item.getData());
+        queue.add(item.getData());
         prefix(item.leftChild, queue);
         prefix(item.rightChild, queue);
     }
@@ -36,8 +34,7 @@ public class BinaryTree {
         }
         postfix(item.leftChild, queue);
         postfix(item.rightChild, queue);
-        queue.add("=> Data: " + item.getData() + ", height: " + item.getHeight());
-        //queue.add(item.getData());
+        queue.add(item.getData());
     }
 
     static private int balanceFactor(BinaryTreeItem item) {
@@ -88,13 +85,14 @@ public class BinaryTree {
 
         int iterations = 1;
 
-        while (parent != null) { // Increment heights of all the parental BinaryTreeItems
+        /*while (parent != null) { // Increment heights of all the parental BinaryTreeItems
             iterations++;
             if (iterations > height(parent)) {
                 parent.setHeight(height(parent) + 1);
             }
+            balance(parent);
             parent = parent.getParent();
-        }
+        }*/
     }
 
     public void delete(int item) { // Delete an item
@@ -164,20 +162,20 @@ public class BinaryTree {
         return false;
     }
 
-    public Iterator<String> infixIterator() {
-        Queue<String> queue = new LinkedList<>();
+    public Iterator<Integer> infixIterator() {
+        Queue<Integer> queue = new LinkedList<>();
         infix(root, queue);
         return queue.iterator();
     }
 
-    public Iterator<String> prefixIterator() {
-        Queue<String> queue = new LinkedList<>();
+    public Iterator<Integer> prefixIterator() {
+        Queue<Integer> queue = new LinkedList<>();
         prefix(root, queue);
         return queue.iterator();
     }
 
-    public Iterator<String> postfixIterator() {
-        Queue<String> queue = new LinkedList<>();
+    public Iterator<Integer> postfixIterator() {
+        Queue<Integer> queue = new LinkedList<>();
         postfix(root, queue);
         return queue.iterator();
     }
@@ -203,12 +201,14 @@ public class BinaryTree {
     static BinaryTreeItem balance(BinaryTreeItem item) {
         fixHeight(item);
         if (balanceFactor(item) == 2) {
+            System.out.println("=> Balance item " + item.getData() + ", balanceFactor == 2");
             if (balanceFactor(item.getRightChild()) < 0) {
                 item.setRightChild(rotateRight(item.getRightChild()));
             }
             return rotateLeft(item);
         }
         if (balanceFactor(item) == -2) {
+            System.out.println("=> Balance item " + item.getData() + ", balanceFactor == 2");
             if (balanceFactor(item.getLeftChild()) > 0) {
                 item.setLeftChild(rotateLeft(item.getLeftChild()));
             }

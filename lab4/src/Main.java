@@ -2,6 +2,8 @@ import com.exception.*;
 import com.tree.*;
 
 import java.util.Iterator;
+import java.util.List;
+import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
@@ -24,10 +26,20 @@ public class Main {
             System.exit(1);
         }
 
-        Iterator<String> infix = tree.infixIterator();
+        Iterator<Integer> infix = tree.infixIterator();
+        int min = Integer.MAX_VALUE;
 
         while (infix.hasNext()) {
-            System.out.println("=> Item: " + infix.next());
+            int val = infix.next();
+            min = val < min ? val : min;
+        }
+
+        tree.delete(min);
+
+        infix = tree.infixIterator();
+
+        while (infix.hasNext()) {
+            System.out.println("=> " + infix.next());
         }
     }
 }
