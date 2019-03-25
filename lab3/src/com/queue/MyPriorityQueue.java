@@ -70,6 +70,11 @@ public class MyPriorityQueue {
         return front.getData();
     }
 
+    public int frontPriority() throws EmptyQueueException {
+        QueuePriorityItem curr = (QueuePriorityItem) front;
+        return curr.getPriority();
+    }
+
     public int size() { // Возврат размера очереди
         return size;
     }
@@ -116,6 +121,24 @@ public class MyPriorityQueue {
         while (item != back) {
             str += item.getData() + ", "; // Добавляем помимо элемента запятую с пробелом в конце
             item = item.getNext();
+        }
+
+        if (item != null) {
+            str += item.getData();
+        }
+
+        str += "]"; // Закрываем массив в строке
+
+        return str;
+    }
+
+    public String toStringPriority() { // Привести очередь к строке
+        String str = "["; // Открываем массив в строке
+        QueuePriorityItem item = (QueuePriorityItem) front;
+
+        while (item != back) {
+            str += item.getPriority() + ", "; // Добавляем помимо элемента запятую с пробелом в конце
+            item = (QueuePriorityItem) item.getNext();
         }
 
         if (item != null) {
