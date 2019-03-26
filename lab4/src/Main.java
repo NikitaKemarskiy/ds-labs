@@ -1,53 +1,49 @@
-import com.exception.*;
 import com.tree.*;
 
 import java.util.Iterator;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.Scanner;
+
+import static java.lang.Math.ceil;
+import static java.lang.Math.random;
 
 public class Main {
     public static void main(String[] args) {
+        Scanner scan = new Scanner(System.in);
         BinaryTree tree = new BinaryTree();
 
-        try {
-            tree.insert(1);
-            tree.insert(2);
-            tree.insert(3);
-            tree.insert(4);
-            tree.insert(5);
-            tree.insert(6);
-            tree.insert(7);
-            /*tree.insert(1);
-            tree.insert(6);
-            tree.insert(2);
-            tree.insert(8);
-            tree.insert(11);
-            tree.insert(9);
-            tree.insert(7);
-            tree.insert(5);
-            tree.insert(4);
-            tree.insert(3);
-            tree.insert(-2);*/
-        } catch (InvalidItemException err) {
-            System.out.println("Error: " + err.getMessage());
-            System.exit(1);
+        // Input number of items to insert into a BinaryTree
+        System.out.print("Input number of items: ");
+        int n = scan.nextInt();
+        
+        // Fill BinaryTree with random values
+        for (int i = 0; i < n; i++) {
+            int item = (int)(random() * 50);
+            System.out.print(item + "; ");
+            tree.insert(item);
         }
+        System.out.println();
 
+        // Infix iterate BinaryTree
         Iterator<Integer> infix = tree.infixIterator();
-
-        /*int min = Integer.MAX_VALUE;
-
+        System.out.print("Infix: ");       
         while (infix.hasNext()) {
-            int val = infix.next();
-            min = val < min ? val : min;
+            System.out.print(infix.next() + "; ");
         }
+        System.out.println();
+        
+        // Input item to delete min value in its subtree
+        System.out.print("Input item to delete min value: ");
+        int item = scan.nextInt();
 
-        tree.remove(min);
+        // Delete min value in its subtree
+        tree.removeMin(item);
 
-        infix = tree.infixIterator();*/
-
+        // Infix iterate BinaryTree
+        infix = tree.infixIterator();
+        System.out.print("Infix: ");       
         while (infix.hasNext()) {
-            System.out.println("=> " + infix.next());
+            System.out.print(infix.next() + "; ");
         }
+        System.out.println();
     }
 }

@@ -1,7 +1,5 @@
 package com.tree;
 
-import com.exception.*;
-
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -85,8 +83,38 @@ public class BinaryTree {
         item.setHeight((leftHeight > rightHeight ? leftHeight : rightHeight) + 1);
     }
 
-    static private BinaryTreeItem findMin(BinaryTreeItem item) {
-        return item.hasLeftChild() ? findMin(item.getLeftChild()) : item;
+    static private BinaryTreeItem rotateRight(BinaryTreeItem item) {
+        BinaryTreeItem leftChild = item.getLeftChild();
+        item.setLeftChild(leftChild.getRightChild());
+        leftChild.setRightChild(item);
+        fixHeight(item);
+        fixHeight(leftChild);
+        return leftChild;
+    }
+
+    static private BinaryTreeItem rotateLeft(BinaryTreeItem item) {
+        BinaryTreeItem rightChild = item.getRightChild();
+        item.setRightChild(rightChild.getLeftChild());
+        rightChild.setLeftChild(item);
+        fixHeight(item);
+        fixHeight(rightChild);
+        return rightChild;
+    }
+
+    static private BinaryTreeItem balance(BinaryTreeItem item) {
+        fixHeight(item);
+        if (balanceFactor(item) == 2) {
+            if (balanceFactor(item.getRightChild()) < 0) {
+                item.setRightChild(rotateRight(item.getRightChild()));
+            }
+            return rotateLeft(item);
+        } else if (balanceFactor(item) == -2) {
+            if (balanceFactor(item.getLeftChild()) > 0) {
+                item.setLeftChild(rotateLeft(item.getLeftChild()));
+            }
+            return rotateRight(item);
+        }
+        return item; // Balance isn't needed
     }
 
     static private BinaryTreeItem removeMin(BinaryTreeItem item) {
@@ -97,27 +125,31 @@ public class BinaryTree {
         return balance(item);
     }
 
+    static private BinaryTreeItem findMin(BinaryTreeItem item) {
+        return item.hasLeftChild() ? findMin(item.getLeftChild()) : item;
+    }
+
     // Public
     public BinaryTree() {}
 
     // Methods
-    public void insert(int item) throws InvalidItemException {
+    public void insert(int item) {
         root = insert(root, item);
     }
 
     public void remove(int item) { // Delete an item
-        remove(root, item);
+        root = remove(root, item);
     }
 
-    public boolean search(int item) { // Search an item
+    public BinaryTreeItem search(int item) { // Search an item
         BinaryTreeItem curr = root;
         while (curr != null) {
             if (item == curr.getData()) {
-                return true;
+                return curr;
             }
             curr = item < curr.getData() ? curr.getLeftChild() : curr.getRightChild();
         }
-        return false;
+        return null;
     }
 
     public Iterator<Integer> infixIterator() {
@@ -138,37 +170,12 @@ public class BinaryTree {
         return queue.iterator();
     }
 
-    static BinaryTreeItem rotateRight(BinaryTreeItem item) {
-        BinaryTreeItem leftChild = item.getLeftChild();
-        item.setLeftChild(leftChild.getRightChild());
-        leftChild.setRightChild(item);
-        fixHeight(leftChild);
-        fixHeight(item);
-        return leftChild;
-    }
-
-    static BinaryTreeItem rotateLeft(BinaryTreeItem item) {
-        BinaryTreeItem rightChild = item.getRightChild();
-        item.setRightChild(rightChild.getLeftChild());
-        rightChild.setLeftChild(item);
-        fixHeight(item);
-        fixHeight(rightChild);
-        return rightChild;
-    }
-
-    static BinaryTreeItem balance(BinaryTreeItem item) {
-        fixHeight(item);
-        if (balanceFactor(item) == 2) {
-            if (balanceFactor(item.getRightChild()) < 0) {
-                item.setRightChild(rotateRight(item.getRightChild()));
-            }
-            item = rotateLeft(item);
-        } else if (balanceFactor(item) == -2) {
-            if (balanceFactor(item.getLeftChild()) > 0) {
-                item.setLeftChild(rotateLeft(item.getLeftChild()));
-            }
-            item = rotateRight(item);
+    public void removeMin(int value) {
+        BinaryTreeItem item = search(value);
+        if (item == null) {
+            return;
         }
-        return item; // Balance isn't needed
+        item = findMin(item);
+        root = remove(root, item.getData());
     }
 }
