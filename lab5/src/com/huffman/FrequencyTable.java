@@ -1,31 +1,10 @@
 package com.huffman;
 
-import java.util.List;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.HashMap;
+import java.util.*;
 
 public class FrequencyTable {
     // Private
     List<Entry> list;
-
-    private void sort() { // Sorting method
-        for (int i = 0; i < list.size() - 1; i++) {
-            int max = list.get(i).getValue();
-            int index = i;
-            for (int j = i + 1; j < list.size(); j++) {
-                if (max < list.get(j).getValue()) {
-                    index = j;
-                    max = list.get(j).getValue();
-                }
-            }
-            if (index > i) {
-                Entry buff = list.get(i);
-                list.add(i, list.get(index));
-                list.add(index, buff);
-            }
-        }
-    }
 
     // Public
     public FrequencyTable(String str) {
@@ -63,7 +42,12 @@ public class FrequencyTable {
             chars.remove(ch);
         }
 
-        sort();
+        Collections.sort(list, new Comparator<Entry>() {
+            @Override
+            public int compare(Entry entry1, Entry entry2) {
+                return entry1.compareTo(entry2);
+            }
+        });
     }
 
     public String toString() { // To String method

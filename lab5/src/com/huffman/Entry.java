@@ -1,9 +1,9 @@
 package com.huffman;
 
-class Entry {
+class Entry implements Comparable<Entry> {
     // Private
-    Character key;
-    Integer value;
+    private Character key;
+    private Integer value;
 
     // Public
     Entry(Character key, Integer value) {
@@ -28,5 +28,10 @@ class Entry {
     // Methods
     public String toString() {
         return "(" + key + "; " + value + ")";
+    }
+
+    @Override
+    public int compareTo(Entry other) {
+        return value - other.value;
     }
 }
