@@ -27,7 +27,7 @@ class Entry implements Comparable<Entry> {
 
     // Methods
     public String toString() {
-        return "(" + key + "; " + value + ")";
+        return String.format("(%c; %d)", key, value);
     }
 
     @Override

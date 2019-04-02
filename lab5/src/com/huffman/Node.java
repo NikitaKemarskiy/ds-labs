@@ -57,7 +57,7 @@ class Node implements Comparable<Node> {
     }
 
     public String toString() {
-        return "(" + key + "; " + value + ")";
+        return String.format("(%c; %d)", key, value);
     }
 
     @Override

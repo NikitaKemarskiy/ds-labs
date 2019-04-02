@@ -1,19 +1,41 @@
 package com.huffman;
 
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.LinkedList;
 
 public class HuffmanTree {
     // Private
     private Node root;
+    private HashMap<Character, String> table;
+
+    private void buildTable() { // Build table method
+        table = new HashMap<>();
+        if (root != null) {
+            addToTable(root, "");
+        }
+    }
+
+    private void addToTable(Node node, String path) { // Add character to table method
+        if (node.hasLeft()) {
+            addToTable(node.getLeft(), path + "0");
+        }
+        if (node.isLeaf()) {
+            table.put(node.getKey(), path);
+        }
+        if (node.hasRight()) {
+            addToTable(node.getRight(), path + "1");
+        }
+    }
 
     // Public
     public HuffmanTree(String str) {
         build(str);
     }
 
-    public void build(String str) {
+    // Methods
+    public void build(String str) { // Build tree method
         FrequencyTable frequencyTable = new FrequencyTable(str);
         List<Entry> frequencyList = frequencyTable.getList();
         List<Node> frequencyNodeList = new LinkedList<>();
@@ -38,5 +60,31 @@ public class HuffmanTree {
         }
 
         root = frequencyNodeList.size() == 1 ? frequencyNodeList.get(0) : null;
+        buildTable();
+    }
+
+    public String infix() { // Infix method
+        String str = "[";
+        if (root != null) {
+            str += infix(root, "");
+            str = str.substring(0, str.length() - 1);
+            str += " ";
+        }
+        str += "]";
+        return str;
+    }
+
+    public String infix(Node node, String path) { // Infix method with specified Node
+        String str = "";
+        if (node.hasLeft()) {
+            str += infix(node.getLeft(), path + "0");
+        }
+        if (node.isLeaf()) {
+            str += String.format(" (%c; %s),", node.getKey(), path);
+        }
+        if (node.hasRight()) {
+            str += infix(node.getRight(), path + "1");
+        }
+        return str;
     }
 }
