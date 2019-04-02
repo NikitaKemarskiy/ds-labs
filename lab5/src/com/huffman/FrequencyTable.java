@@ -7,9 +7,9 @@ import java.util.HashMap;
 
 public class FrequencyTable {
     // Private
-    List<Entry> list = new LinkedList<>();
+    List<Entry> list;
 
-    private void sort() { // Sorting function
+    private void sort() { // Sorting method
         for (int i = 0; i < list.size() - 1; i++) {
             int max = list.get(i).getValue();
             int index = i;
@@ -32,8 +32,16 @@ public class FrequencyTable {
         build(str);
     }
 
+    // Getters
+    public List<Entry> getList() {
+        return list;
+    }
+
+    // Methods
     public void build(String str) { // Build frequency table
         Map<Character, Integer> chars = new HashMap<>();
+        list = new LinkedList<>();
+
         for (int i = 0; i < str.length(); i++) {
             Character ch = str.charAt(i);
             if (chars.containsKey(ch)) {
@@ -42,7 +50,6 @@ public class FrequencyTable {
             }
             chars.put(ch, 1);
         }
-
         while (chars.size() > 0) {
             Character ch = Character.MIN_VALUE;
             int max = Integer.MIN_VALUE;
@@ -59,16 +66,7 @@ public class FrequencyTable {
         sort();
     }
 
-    public String toString() {
-        String str = "[";
-        for (Entry item : list) {
-            str += " " + item.getKey() + " - " + item.getValue() + ";";
-        }
-        if (str.length() > 1) {
-            str = str.substring(0, str.length() - 1);
-            str += " ";
-        }
-        str += "]";
-        return str;
+    public String toString() { // To String method
+        return list.toString();
     }
 }

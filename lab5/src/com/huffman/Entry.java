@@ -24,4 +24,9 @@ class Entry {
     void setValue(Integer value) {
         this.value = value;
     }
+
+    // Methods
+    public String toString() {
+        return "(" + key + "; " + value + ")";
+    }
 }
