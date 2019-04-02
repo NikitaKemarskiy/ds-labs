@@ -30,6 +30,21 @@ public class Main {
             System.out.print(infix.next() + "; ");
         }
         System.out.println();
+
+        Iterator<Integer> prefix = tree.prefixIterator();
+        System.out.print("Prefix: ");
+        while (prefix.hasNext()) {
+            System.out.print(prefix.next() + "; ");
+        }
+        System.out.println();
+
+        Iterator<Integer> postfix = tree.postfixIterator();
+        System.out.print("Postfix: ");
+        while (postfix.hasNext()) {
+            System.out.print(postfix.next() + "; ");
+        }
+        System.out.println();
+        System.out.println();
         
         // Input item to delete min value in its subtree
         System.out.print("Input item to delete min value: ");
@@ -43,6 +58,20 @@ public class Main {
         System.out.print("Infix: ");       
         while (infix.hasNext()) {
             System.out.print(infix.next() + "; ");
+        }
+        System.out.println();
+
+        prefix = tree.prefixIterator();
+        System.out.print("Prefix: ");
+        while (prefix.hasNext()) {
+            System.out.print(prefix.next() + "; ");
+        }
+        System.out.println();
+
+        postfix = tree.postfixIterator();
+        System.out.print("Postfix: ");
+        while (postfix.hasNext()) {
+            System.out.print(postfix.next() + "; ");
         }
         System.out.println();
     }
