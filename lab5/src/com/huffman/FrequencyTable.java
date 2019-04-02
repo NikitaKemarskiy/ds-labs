@@ -2,22 +2,22 @@ package com.huffman;
 
 import java.util.*;
 
-public class FrequencyTable {
+class FrequencyTable {
     // Private
     List<Entry> list;
 
     // Public
-    public FrequencyTable(String str) {
+    FrequencyTable(String str) {
         build(str);
     }
 
     // Getters
-    public List<Entry> getList() {
+    List<Entry> getList() {
         return list;
     }
 
     // Methods
-    public void build(String str) { // Build frequency table
+    void build(String str) { // Build frequency table
         Map<Character, Integer> chars = new HashMap<>();
         list = new LinkedList<>();
 

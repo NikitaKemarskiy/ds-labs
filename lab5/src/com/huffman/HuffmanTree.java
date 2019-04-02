@@ -9,9 +9,11 @@ public class HuffmanTree {
     // Private
     private Node root;
     private HashMap<Character, String> table;
+    private int weight;
 
     private void buildTable() { // Build table method
         table = new HashMap<>();
+        weight = 0;
         if (root != null) {
             addToTable(root, "");
         }
@@ -23,6 +25,7 @@ public class HuffmanTree {
         }
         if (node.isLeaf()) {
             table.put(node.getKey(), path);
+            weight += node.getValue() * path.length(); // Increase weight
         }
         if (node.hasRight()) {
             addToTable(node.getRight(), path + "1");
@@ -32,6 +35,11 @@ public class HuffmanTree {
     // Public
     public HuffmanTree(String str) {
         build(str);
+    }
+
+    // Getters
+    public int getWeight() {
+        return weight;
     }
 
     // Methods
@@ -61,6 +69,24 @@ public class HuffmanTree {
 
         root = frequencyNodeList.size() == 1 ? frequencyNodeList.get(0) : null;
         buildTable();
+    }
+
+    public String encode(Character ch) {
+        return table.get(ch);
+    }
+
+    public Character decode(String path) {
+        Node curr = root;
+        for (int i = 0; i < path.length(); i++) {
+            curr = path.charAt(i) == '0' ? curr.getLeft() : path.charAt(i) == '1' ? curr.getRight() : null;
+            if (curr == null) {
+                return null;
+            }
+        }
+        if (curr.isLeaf()) {
+            return curr.getKey();
+        }
+        return null;
     }
 
     public String infix() { // Infix method
