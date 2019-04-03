@@ -1,6 +1,7 @@
 package com.huffman;
 
 import java.util.Comparator;
+import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 import java.util.LinkedList;
@@ -8,7 +9,7 @@ import java.util.LinkedList;
 public class HuffmanTree {
     // Private
     private Node root;
-    private HashMap<Character, String> table;
+    private Map<Character, String> table;
     private int weight;
 
     private void buildTable() { // Build table method
@@ -42,6 +43,10 @@ public class HuffmanTree {
         return weight;
     }
 
+    public Map getTable() {
+        return table;
+    }
+
     // Methods
     public void build(String str) { // Build tree method
         FrequencyTable frequencyTable = new FrequencyTable(str);
@@ -71,22 +76,29 @@ public class HuffmanTree {
         buildTable();
     }
 
+    public String encode(String str) {
+        String result = "";
+        for (int i = 0; i < str.length(); i++) {
+            result += encode(str.charAt(i));
+        }
+        return result;
+    }
+
     public String encode(Character ch) {
         return table.get(ch);
     }
 
-    public Character decode(String path) {
+    public String decode(String str) {
         Node curr = root;
-        for (int i = 0; i < path.length(); i++) {
-            curr = path.charAt(i) == '0' ? curr.getLeft() : path.charAt(i) == '1' ? curr.getRight() : null;
-            if (curr == null) {
-                return null;
+        String result = "";
+        for (int i = 0; i < str.length(); i++) {
+            curr = str.charAt(i) == '0' ? curr.getLeft() : curr.getRight();
+            if (curr.isLeaf()) {
+                result += curr.getKey();
+                curr = root;
             }
         }
-        if (curr.isLeaf()) {
-            return curr.getKey();
-        }
-        return null;
+        return result;
     }
 
     public String infix() { // Infix method
