@@ -2,7 +2,6 @@ package com.graph;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 public class Vertex {
     // Private
