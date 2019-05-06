@@ -135,4 +135,51 @@ public class Graph {
             System.out.println(); // New line
         }
     }
+
+    // Dijkstra algorithm implementation
+    public void dijkstra() {
+        //...
+    }
+
+    // Floyd Warshall algorithm implementation
+    public void floydWarshall() {
+        double[][] lengths = new double[vertices.size()][vertices.size()]; // Matrix of the shortest ways lengths
+        String[][] ways = new String[vertices.size()][vertices.size()]; // Matrix of the ways
+        Vertex[] arr = new Vertex[vertices.size()]; // Array with the vertices
+
+        int index = 0;
+        for (Vertex vertex : vertices.values()) { // Fill the array
+            arr[index++] = vertex;
+        }
+
+        for (int i = 0; i < arr.length; i++) { // Fill the length and ways matrices
+            Vertex curr = arr[i]; // Current vertex
+            for (int j = 0; j < arr.length; j++) {
+                lengths[i][j] = curr.getLength(arr[j].getName()); // Length from [i] to [j]
+                if (lengths[i][j] >= 0) {
+                    ways[i][j] = arr[j].getName(); // Way from [i] to [j]
+                }
+            }
+        }
+
+        for (int i = 0; i < arr.length; i++) {
+            for (int j = 0; j < arr.length; j++) { // Rows
+                if (lengths[j][i] <= 0) { continue; }
+                for (int k = 0; k < arr.length; k++) { // Columns
+                    if (lengths[i][k] <= 0) { continue; }
+                    if (lengths[j][k] == -1 || lengths[j][k] > lengths[j][i] + lengths[i][k]) {
+                        lengths[j][k] = lengths[j][i] + lengths[i][k];
+                        ways[j][k] = arr[i].getName();
+                    }
+
+                }
+            }
+
+        }
+    }
+
+    // Bellman Ford algorithm implementation
+    public void bellmanFord() {
+        //...
+    }
 }
