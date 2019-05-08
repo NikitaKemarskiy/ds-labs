@@ -48,4 +48,17 @@ public class Vertex {
     public void setChecked(boolean checked) {
         this.checked = checked;
     }
+
+    public Edge[] getEdges() {
+        Edge[] edges = new Edge[vertices.size()];
+        int index = 0;
+        for (Edge edge : vertices.values()) {
+            edges[index++] = edge;
+        }
+        return edges;
+    }
+
+    public int getEdgesNumber() {
+        return vertices.size();
+    }
 }

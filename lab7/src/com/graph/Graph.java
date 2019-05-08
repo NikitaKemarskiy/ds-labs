@@ -1,6 +1,7 @@
 package com.graph;
 
 import java.util.*;
+import java.util.Map.*;
 
 public class Graph {
     // Private
@@ -13,6 +14,38 @@ public class Graph {
         for (Vertex vertex : vertices.values()) {
             vertex.setChecked(false);
         }
+    }
+
+    private Edge[] getEdges() {
+        int size = 0;
+        for (Vertex vertex : vertices.values()) {
+            size += vertex.getEdgesNumber();
+        }
+        Edge[] edges = new Edge[size];
+        int index = 0;
+        for (Vertex vertex : vertices.values()) {
+            Edge[] buff = vertex.getEdges();
+            for (Edge edge : buff) {
+                edges[index++] = edge;
+            }
+        }
+        return edges;
+    }
+
+    private Vertex getClosest(Map<Vertex, Double> lengths) {
+        Vertex closest = null;
+        double min = Double.MAX_VALUE;
+
+        for (Entry<Vertex, Double> entry : lengths.entrySet()) {
+            if (entry.getKey().isChecked()) { continue; }
+            if (entry.getValue() == -1) { continue; }
+            if (entry.getValue() < min) {
+                min = entry.getValue();
+                closest = entry.getKey();
+            }
+        }
+
+        return closest;
     }
 
     // Initialization block
@@ -56,6 +89,10 @@ public class Graph {
             from.addEdge(edge1);
             to.addEdge(edge2);
         }
+    }
+
+    public boolean hasVertex(String name) {
+        return vertices.containsKey(name);
     }
 
     public String depthSearch(String name) {
@@ -126,10 +163,6 @@ public class Graph {
                     System.out.printf("%-7s", "-"); // Print "-"
                     continue;
                 }
-                if (length % 1 == length) { // Length is integer
-                    System.out.printf("%-7d", (int) length); // Print an integer value
-                    continue;
-                }
                 System.out.printf("%-7.1f", length); // Print a double value
             }
             System.out.println(); // New line
@@ -138,7 +171,62 @@ public class Graph {
 
     // Dijkstra algorithm implementation
     public void dijkstra() {
-        //...
+        double[][] lengths = new double[vertices.size()][vertices.size()]; // Matrix of the shortest ways lengths
+        Vertex[] arr = new Vertex[vertices.size()];
+        int index = 0;
+        for (Vertex vertex : vertices.values()) { // Fill the array
+            arr[index++] = vertex;
+        }
+
+        for (int i = 0; i < arr.length; i++) {
+            updateStatus();
+
+            Vertex curr = arr[i];
+            Map<Vertex, Double> lengthsMap = new HashMap<>();
+            for (Vertex vertex : arr) { // Fill the lengths map
+                lengthsMap.put(vertex, arr[i].getName() == vertex.getName() ? 0 : -1d);
+            }
+
+            while (curr != null) {
+                String[] neighbours = curr.getNeighbours();
+                for (String name : neighbours) {
+                    Vertex neighbour = vertices.get(name);
+                    if (neighbour.isChecked()) { continue; }
+                    if (lengthsMap.get(neighbour) == -1 || lengthsMap.get(neighbour) > lengthsMap.get(curr) + curr.getLength(name)) {
+                        lengthsMap.replace(neighbour, lengthsMap.get(curr) + curr.getLength(name));
+                    }
+                }
+                curr.setChecked(true);
+                curr = getClosest(lengthsMap);
+            }
+
+            for (int j = 0; j < arr.length; j++) {
+                lengths[i][j] = lengthsMap.get(arr[j]);
+            }
+        }
+
+        // Print the table
+        System.out.println("=====================================");
+        // Lengths table
+        System.out.println("Lengths:");
+        System.out.printf("%-7s", ""); // White space 7 symbols length
+        for (int i = 0; i < arr.length; i++) { // First row which contains of all vertices names
+            System.out.printf("%-7s", arr[i].getName());
+        }
+        System.out.println(); // New line
+        for (int i = 0; i < arr.length; i++) {
+            System.out.printf("%-7s", arr[i].getName()); // Current vertex name
+            for (int j = 0; j < arr.length; j++) { // For every vertex
+                double length = lengths[i][j]; // Length from current vertex to another vertex
+                if (length == -1) { // There is no edge
+                    System.out.printf("%-7s", "-"); // Print "-"
+                    continue;
+                }
+                System.out.printf("%-7.1f", length); // Print a double value
+            }
+            System.out.println(); // New line
+        }
+        System.out.println();
     }
 
     // Floyd Warshall algorithm implementation
@@ -162,6 +250,7 @@ public class Graph {
             }
         }
 
+        // Fill lengths and ways matrices
         for (int i = 0; i < arr.length; i++) {
             for (int j = 0; j < arr.length; j++) { // Rows
                 if (lengths[j][i] <= 0) { continue; }
@@ -169,17 +258,137 @@ public class Graph {
                     if (lengths[i][k] <= 0) { continue; }
                     if (lengths[j][k] == -1 || lengths[j][k] > lengths[j][i] + lengths[i][k]) {
                         lengths[j][k] = lengths[j][i] + lengths[i][k];
-                        ways[j][k] = arr[i].getName();
+                        ways[j][k] = ways[j][i];
                     }
 
                 }
             }
-
         }
+
+        // Print the tables
+        System.out.println("=====================================");
+        // Lengths table
+        System.out.println("Lengths:");
+        System.out.printf("%-7s", ""); // White space 7 symbols length
+        for (int i = 0; i < arr.length; i++) { // First row which contains of all vertices names
+            System.out.printf("%-7s", arr[i].getName());
+        }
+        System.out.println(); // New line
+        for (int i = 0; i < arr.length; i++) {
+            System.out.printf("%-7s", arr[i].getName()); // Current vertex name
+            for (int j = 0; j < arr.length; j++) { // For every vertex
+                double length = lengths[i][j]; // Length from current vertex to another vertex
+                if (length == -1) { // There is no edge
+                    System.out.printf("%-7s", "-"); // Print "-"
+                    continue;
+                }
+                System.out.printf("%-7.1f", length); // Print a double value
+            }
+            System.out.println(); // New line
+        }
+        System.out.println();
+
+        // Ways table
+        System.out.println("Ways:");
+        System.out.printf("%-7s", ""); // White space 7 symbols length
+        for (int i = 0; i < arr.length; i++) { // First row which contains of all vertices names
+            System.out.printf("%-7s", arr[i].getName());
+        }
+        System.out.println(); // New line
+        for (int i = 0; i < arr.length; i++) {
+            System.out.printf("%-7s", arr[i].getName()); // Current vertex name
+            for (int j = 0; j < arr.length; j++) { // For every vertex
+                String way = ways[i][j]; // Last vertex in the way from current vertex to another
+                System.out.printf("%-7s", way);
+            }
+            System.out.println(); // New line
+        }
+        System.out.println("=====================================");
     }
 
     // Bellman Ford algorithm implementation
     public void bellmanFord() {
-        //...
+        double[][] lengths = new double[vertices.size()][vertices.size()]; // Matrix of the shortest ways lengths
+        String[][] ways = new String[vertices.size()][vertices.size()]; // Matrix of the ways
+        String[] arr = new String[vertices.size()];
+        Edge[] edges = getEdges();
+        int index = 0;
+        for (String name : vertices.keySet()) { // Fill the array
+            arr[index++] = name;
+        }
+
+        for (int i = 0; i < arr.length; i++) {
+            Map<Vertex, Double> lengthsMap = new LinkedHashMap<>();
+            Map<Vertex, String> waysMap = new LinkedHashMap<>();
+            Vertex curr = vertices.get(arr[i]);
+
+            //int index = 0;
+            for (Vertex vertex : vertices.values()) { // Fill the array
+                lengthsMap.put(vertex, curr.getName() == vertex.getName() ? 0 : Double.MAX_VALUE);
+                waysMap.put(vertex, curr.getName() == vertex.getName() ? vertex.getName() : "-");
+            }
+
+            for (int k = 0; k < vertices.size() - 1; k++) {
+                for (int j = 0; j < edges.length; j++) {
+                    Vertex from = edges[j].getFrom();
+                    Vertex to = edges[j].getTo();
+                    double length = edges[j].getLength();
+                    if (lengthsMap.get(from) != Double.MAX_VALUE && lengthsMap.get(from) + length < lengthsMap.get(to)) {
+                        lengthsMap.replace(to, lengthsMap.get(from) + length);
+                        waysMap.replace(to, from.getName());
+                    }
+                }
+            }
+
+            for (int j = 0; j < arr.length; j++) {
+                Vertex vertex = vertices.get(arr[j]);
+                lengths[i][j] = lengthsMap.get(vertex);
+                ways[i][j] = waysMap.get(vertex);
+            }
+        }
+
+        // Print the tables
+        System.out.println("=====================================");
+        // Lengths table
+        System.out.println("Lengths:");
+        System.out.printf("%-7s", ""); // White space 7 symbols length
+        for (int i = 0; i < arr.length; i++) { // First row which contains of all vertices names
+            System.out.printf("%-7s", arr[i]);
+        }
+        System.out.println(); // New line
+        for (int i = 0; i < arr.length; i++) {
+            System.out.printf("%-7s", arr[i]); // Current vertex name
+            for (int j = 0; j < arr.length; j++) { // For every vertex
+                double length = lengths[i][j]; // Length from current vertex to another vertex
+                if (length == -1) { // There is no edge
+                    System.out.printf("%-7s", "-"); // Print "-"
+                    continue;
+                }
+                System.out.printf("%-7.1f", length); // Print a double value
+            }
+            System.out.println(); // New line
+        }
+        System.out.println();
+
+        // Ways table
+        System.out.println("Ways:");
+        System.out.printf("%-7s", ""); // White space 7 symbols length
+        for (int i = 0; i < arr.length; i++) { // First row which contains of all vertices names
+            System.out.printf("%-7s", arr[i]);
+        }
+        System.out.println(); // New line
+        for (int i = 0; i < arr.length; i++) {
+            System.out.printf("%-7s", arr[i]); // Current vertex name
+            for (int j = 0; j < arr.length; j++) { // For every vertex
+                String way = ways[i][j]; // Last vertex in the way from current vertex to another
+                System.out.printf("%-7s", way);
+            }
+            System.out.println(); // New line
+        }
+        System.out.println("=====================================");
+    }
+
+    public int getSize() {
+        return vertices.size();
     }
 }
