@@ -22,7 +22,7 @@ public class Network {
             Node from = path.remove();
             Node to = path.peek();
             int additionalFlow;
-            if (from.getArc(to.getName()).getFlow() >= 0) {
+            if (from.getArc(to.getName()) instanceof ArcOut) {
                 additionalFlow = from.getArc(to.getName()).getCapacity() - from.getArc(to.getName()).getFlow();
             } else {
                 additionalFlow = abs(from.getArc(to.getName()).getFlow());
@@ -38,7 +38,8 @@ public class Network {
         while (path.size() > 1) {
             Node from = path.remove();
             Node to = path.peek();
-            if (from.getArc(to.getName()).getFlow() >= 0) { // Flow is positive
+
+            if (from.getArc(to.getName()) instanceof ArcOut) { // Flow is positive
                 from.getArc(to.getName()).addFlow(flow);
                 to.getArc(from.getName()).removeFlow(flow);
             } else { // Flow is negative
@@ -61,8 +62,8 @@ public class Network {
 
     public void addArc(String from, String to, int capacity, int flow) {
         if (!nodes.containsKey(from) || !nodes.containsKey(to)) { return; }
-        nodes.get(from).addArc(nodes.get(to), capacity, flow);
-        nodes.get(to).addArc(nodes.get(from), capacity, (-1) * flow);
+        nodes.get(from).addArcOut(nodes.get(to), capacity, flow);
+        nodes.get(to).addArcIn(nodes.get(from), capacity, (-1) * flow);
     }
 
     public void setSource(String name) {
@@ -96,12 +97,12 @@ public class Network {
             if (next == null) { // There's no appropriate next node
                 ((LinkedList<Node>) path).removeLast(); // Remove last node from the path queue
                 if (path.size() == 0) { break; } // Path queue is empty - break from the loop
-                curr.setChecked(true); // Set curr as a checked
+                curr.setChecked(true); // Set curr as checked
                 curr = ((LinkedList<Node>) path).getLast(); // Set last node in the path as curr
                 ((LinkedList<Node>) path).removeLast(); // Remove last node in the path (curr will be added in the next iteration)
                 continue; // Continue the loop
             }
-            curr.setChecked(true); // Set curr as a checked
+            curr.setChecked(true); // Set curr as checked
             curr = next; // Set next as a curr
             if (curr == target) { // Curr is a target
                 path.add(target);
@@ -119,5 +120,25 @@ public class Network {
         }
 
         return flow;
+    }
+
+    public List<Arc> getArcs() {
+        List<Arc> arcs = new LinkedList<>();
+        for (Node node : nodes.values()) {
+            Arc[] arr = node.getArcs();
+            for (Arc arc : arr) {
+                if (arc instanceof ArcIn) { continue; }
+                arcs.add(arc);
+            }
+        }
+        return arcs;
+    }
+
+    public String getSource() {
+        return source.getName();
+    }
+
+    public String getTarget() {
+        return target.getName();
     }
 }

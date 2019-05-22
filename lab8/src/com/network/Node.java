@@ -19,9 +19,14 @@ public class Node {
         this.name = name;
     }
 
-    public void addArc(Node to, int capacity, int flow) {
+    public void addArcIn(Node from, int capacity, int flow) {
+        if (arcs.containsKey(from.getName())) { return; }
+        arcs.put(from.getName(), new ArcIn(this, from, capacity, flow));
+    }
+
+    public void addArcOut(Node to, int capacity, int flow) {
         if (arcs.containsKey(to.getName())) { return; }
-        arcs.put(to.getName(), new Arc(this, to, capacity, flow));
+        arcs.put(to.getName(), new ArcOut(this, to, capacity, flow));
     }
 
     public void setChecked(boolean checked) {
